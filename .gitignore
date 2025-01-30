@@ -1,0 +1,7 @@
+.DS_Store
+*.pyc
+.idea/
+venv/
+cdk.context.json
+cdk.out/
+test/test_output/*
