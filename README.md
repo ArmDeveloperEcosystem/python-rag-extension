@@ -4,7 +4,7 @@ This is an example of a GitHub Copilot extension that implements a RAG workflow 
 
 # Infra deployment
 
-The backend is deployed via AWS CDK. This assumes that the CDK bootstrap has been run in the account and region where the deployment is to be made.
+The backend is deployed with AWS CDK. This assumes that the CDK bootstrap has been run in the account and region where the deployment is to be made.
 
 To deploy the CDK stack, first source the correct env_variables.sh file and then run the following commands:
 
