@@ -35,12 +35,11 @@ Activate the environment:
 
 conda activate copilot
 
-Copy the requirements.txt file from the root of this repo to whereever you want to install the requirements.
+Copy the requirements.txt file from the root of this repo to the environment you want to install the requirements.
 
 Install the required packages:
 
 conda install --file requirements.txt
-
 
 ## building the vector store
 
