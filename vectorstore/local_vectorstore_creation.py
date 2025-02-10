@@ -10,6 +10,9 @@ from openai import AzureOpenAI
 import sys
 import datetime
 
+# Global variable for subfolder name
+subfolder = "chunks/"
+
 
 # Obtain LLM testing key
 print("Starting...obtaining LLM API Key...")
@@ -25,14 +28,14 @@ def load_local_yaml_files() -> List[Dict]:
     print("Loading local YAML files")
     yaml_contents = []
 
-    yaml_files = glob.glob("chunk_*.yaml")
+    yaml_files = glob.glob(subfolder+"chunk_*.yaml")
     total_files = len(yaml_files)
     print(f"Found {total_files} YAML files")
 
     for i, file_path in enumerate(yaml_files, 1):
         print(f"Loading file {i}/{total_files}: {file_path}")
         # Extract chunk number from filename
-        chunk_number = int(file_path.replace('chunk_', '').replace('.yaml', ''))
+        chunk_number = int(file_path.replace(subfolder+'chunk_', '').replace('.yaml', ''))
         
         with open(file_path, 'r') as f:
             yaml_content = yaml.safe_load(f)
@@ -109,7 +112,7 @@ def main():
 
     print("Saving embeddings to file")
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"embeddings_{timestamp}.txt"
+    filename = f"{subfolder}embeddings_{timestamp}.txt"
     np.savetxt(filename, embeddings)
 
     # Create FAISS index
@@ -117,12 +120,12 @@ def main():
     index, metadata = create_faiss_index(embeddings, metadata)
 
     # Save the FAISS index
-    index_filename = 'faiss_index.bin'
+    index_filename = subfolder+'faiss_index.bin'
     print(f"Saving FAISS index to {index_filename}")
     faiss.write_index(index, index_filename)
 
     # Save metadata
-    metadata_filename = 'metadata.json'
+    metadata_filename = subfolder+'metadata.json'
     print(f"Saving metadata to {metadata_filename}")
     with open(metadata_filename, 'w') as f:
         json.dump(metadata, f, indent=2)  # Added indent for better readability

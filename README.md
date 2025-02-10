@@ -35,25 +35,14 @@ Activate the environment:
 
 conda activate copilot
 
-Copy the requirements.txt file from the root of this repo to whereever you want to install the requirements.
+Copy the requirements.txt file from the root of this repo to the environment you want to install the requirements.
 
 Install the required packages:
 
 conda install --file requirements.txt
 
-
 ## building the vector store
 
-To build the vector store, get the vector data from S3:
+To build the vector store, you can use the scripts located in the `vectorstore` folder.
 
-aws s3 cp s3://arm-github-copilot-extension/yaml_data.zip .
-
-unzip:
-
-unzip yaml_data.zip
-
-copy the vectorstore creation script to the yaml directory:
-
-cp local_vectorstore_creation.py yaml_data
-
-Run the script:
+For information on how to use them, consult the [`vectorstore` README](vectorstore/README.md).
