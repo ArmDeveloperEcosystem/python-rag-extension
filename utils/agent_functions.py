@@ -29,20 +29,7 @@ def agent_flow(amount_of_context_to_use, messages, copilot_thread_id, system_mes
     """
     This is the main RAG agent functionality. It takes in the amount of context to use, the messages from the user, the Copilot thread ID, the system message, the model name, the LLM client, and the headers. It then extracts the session info, rephrases the messages, searches for context, and streams the response from the Copilot API as SSE.
     """
-    session_item = {}
-    stripped_messages = ""
-    try:
-        session_info, session_item, stripped_messages = sm.extract_session_info(messages)
-    except Exception as e:
-        print(f"Error extracting session info: {e}")
-
-    if stripped_messages:
-        rephrased_messages = sm.rephrase_messages(llm_client, headers, stripped_messages, sm.REPHRASER_SYSTEM_MESSAGE, model_name)
-    else:
-        rephrased_messages = sm.rephrase_messages(llm_client, headers, messages, sm.REPHRASER_SYSTEM_MESSAGE, model_name)
-    user_message = rephrased_messages[-1]['content']
-
-    results = vs.embedding_search(user_message, amount_of_context_to_use, headers)
+    results = vs.embedding_search(messages[-1]['content'], amount_of_context_to_use, headers)
     results = vs.deduplicate_urls(results)
     
     context = ""
@@ -55,17 +42,7 @@ def agent_flow(amount_of_context_to_use, messages, copilot_thread_id, system_mes
         "content": system_message + context
     }]
 
-    # TODO: fix session info extraction for corner cases before removing this if statement
-    if session_item:
-        if sm.check_for_github_reference(session_item):
-            print("GitHub reference found")
-            full_prompt_messages = [session_item] + rephrased_messages
-        else:
-            print("No GitHub reference found")
-            full_prompt_messages = system_message + [session_item] + rephrased_messages
-    else:
-        full_prompt_messages = system_message + rephrased_messages
-
+    full_prompt_messages = system_message + messages
     print(full_prompt_messages)
 
     copilot_req = {
