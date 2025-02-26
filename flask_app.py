@@ -64,21 +64,18 @@ def agent():
         "Copilot-Integration-Id": integration_id
     }
 
-    if os.getenv("DEPLOY_ENVIRONMENT") == "server":
-        return Response(
-            stream_with_context(
-                agent_functions.agent_flow(
-                    AMOUNT_OF_CONTEXT_TO_USE,
-                    messages,
-                    thread_id,
-                    agent_functions.SYSTEM_MESSAGE,
-                    MODEL_NAME,
-                    copilot_url,
-                    headers
-                )
-            ),
-            content_type='text/event-stream'
-        )
+    # For many streaming API responses you'd want to return a text/event-stream, but in this case
+    # the GitHub Copilot API understands a streamed application/json response as well.
+    return app.response_class(agent_functions.agent_flow(
+                                AMOUNT_OF_CONTEXT_TO_USE,
+                                messages,
+                                thread_id,
+                                agent_functions.SYSTEM_MESSAGE,
+                                MODEL_NAME,
+                                copilot_url,
+                                headers
+                            ),  
+                            mimetype='application/json')
 
 @app.route('/marketplace', methods=['POST'])
 def marketplace():

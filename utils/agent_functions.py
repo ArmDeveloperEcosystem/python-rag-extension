@@ -56,40 +56,9 @@ def agent_flow(amount_of_context_to_use, messages, copilot_thread_id, system_mes
     r.raise_for_status()
     stream = r.iter_lines()
 
-    try:
-        for line in stream:
-            if line:
-                send_line = line.decode('utf-8')
-                try:
-                    send_line = json.loads(send_line.strip("data: "))
-                except json.JSONDecodeError:
-                    print(send_line)
-                    if send_line.strip() == "data: [DONE]":
-                        print("Received DONE message from Copilot API")
-                        chunk_template['choices'][0]['delta'] = {}
-                        chunk_template['choices'][0]['finish_reason'] = "stop"
-                        yield f"data: {json.dumps(chunk_template)}\n\n"
-                        yield "data: [DONE]\n\n"
-                        break
-                    else:
-                        print(f"Error decoding JSON: {send_line}")
-                        continue
-                if not chunk_template['id']:
-                    # Fill in the chunk template
-                    if 'model' in send_line:
-                        chunk_template['id'] = send_line['id']
-                        chunk_template['model'] = send_line['model']
-                        chunk_template['system_fingerprint'] = send_line['system_fingerprint']
-                        chunk_template['created'] = send_line['created']
-                send_line['object'] = "chat.completion.chunk"
-                if send_line['choices'] and send_line['choices'][0]['delta']['content']:
-                    send_line['choices'][0]['logprobs'] = None
-                    send_line['choices'][0]['finish_reason'] = None
-                    yield f"data: {json.dumps(send_line)}\n\n"
-                else:
-                    print("Empty response from Copilot API")
-                    continue
-    except requests.RequestException as e:
-        print(f"Error in Copilot API request: {e}")
-        yield f"data: {json.dumps({'error': 'Failed to get chat completions'})}\n\n"
+    for chunk in copilot_response.iter_content():
+            if chunk:
+                # To see what the chunk stream looks like, uncomment the line below
+                # print("Streamed Chunk:", chunk.decode('utf-8'))
+                yield chunk  # Send the chunk to the client
 

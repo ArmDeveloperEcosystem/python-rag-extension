@@ -40,7 +40,6 @@ class CopilotApiStack(Stack):
                                            allow_all_outbound=True,
                                            description="Security group for EC2 instances"
                                            )
-        security_group.add_ingress_rule(ec2.Peer.any_ipv4(), ec2.Port.tcp(5000), "Allow incoming traffic on port 5000")
 
         # Create a launch template
         user_data = ec2.UserData.for_linux()

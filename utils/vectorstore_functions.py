@@ -70,8 +70,6 @@ def embedding_search(query: str, k: int = 5, headers=None):
                     "distance": float(dist),
                     "metadata": FAISS_METADATA[idx]
                 }
-                # store the result in the metrics db but don't block
-                # store_result(result)
                 results.append(result)
 
     return results

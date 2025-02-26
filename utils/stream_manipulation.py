@@ -15,5 +15,3 @@ def get_chunk_template():
                         "object": "chat.completion.chunk"
                     }
     return chunk_template
-
-
