@@ -58,7 +58,7 @@ def agent_flow(amount_of_context_to_use, messages, copilot_thread_id, system_mes
 
     for chunk in copilot_response.iter_content():
             if chunk:
-                # To see what the chunk stream looks like, uncomment the line below
+                # To see what the chunk stream looks like, uncomment the line below.
                 # print("Streamed Chunk:", chunk.decode('utf-8'))
                 yield chunk  # Send the chunk to the client
 
